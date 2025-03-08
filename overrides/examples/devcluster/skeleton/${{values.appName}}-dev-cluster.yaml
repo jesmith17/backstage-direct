@@ -1,0 +1,31 @@
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ${{ values.appName}}-db-secret
+type: Opaque
+data:
+  password: ${{ values.databasePassword }}
+---
+apiVersion: atlas.mongodb.com/v1
+kind: AtlasDeployment
+metadata:
+  name: ${{ values.appName}}
+spec:
+  projectRef:
+    name: ${{ values.appName}}-dev
+  deploymentSpec:
+    clusterType: REPLICASET
+    name: "Dev-cluster"
+    tags:
+      - key: "environment"
+        value: "development"
+    replicationSpecs:
+      - zoneName: US-Zone
+        regionConfigs:
+          - electableSpecs:
+              instanceSize: ${{ values.instanceSize}}
+              nodeCount: 3
+            providerName: AWS
+            regionName: ${{ values.region}}
+            priority: 7

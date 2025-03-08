@@ -1,0 +1,11 @@
+apiVersion: atlas.mongodb.com/v1
+kind: AtlasProject
+metadata:
+ name: ${{values.appName}}-dev
+spec:
+ name: ${{values.appName}}-dev
+ connectionSecretRef:
+   name: mongodb-atlas-operator-api-key
+ projectIpAccessList:
+   - cidrBlock: "0.0.0.0/0"
+     comment: "CIDR block for Application Server A - D"

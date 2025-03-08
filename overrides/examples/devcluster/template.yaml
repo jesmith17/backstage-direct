@@ -1,0 +1,92 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: mongodb-database-repo-template
+  title: Atlas Dev Database Template
+  description: Scaffold a GitHub repository containing database configuration and Kubernetes YAML.
+  tags: 
+    - recommended
+    - aws
+    - dev
+    - poc
+spec:
+  owner: munish-mongodb
+  type: service
+  
+  parameters:
+    - title: Database Configuration
+      required:
+        - appName
+        - databasePassword
+      properties:
+        appName:
+          title: Application Name
+          type: string
+        region:
+          title: AWS region
+          default: US_EAST_1
+          type: string
+          enum:
+            - US_EAST_1
+            - US_WEST_1
+        instanceSize:
+          title: Database Name
+          type: string
+          default: M10
+          enum:
+            - M10
+            - M20
+            - M30
+        databaseUser:
+          title: Database Username
+          type: string
+          default: admin
+        databasePassword:
+          title: Database Password
+          type: string
+          
+
+  steps:  
+    - id: template
+      name: Fetch Skeleton + Template
+      action: fetch:template
+      input:
+        url: ./skeleton
+        values:
+          appName: ${{ parameters.appName }}
+          region: ${{ parameters.region }}
+          instanceSize: ${{ parameters.instanceSize }}
+          databaseUser: ${{ parameters.databaseUser }}
+          databasePassword: ${{ parameters.databasePassword | base64 }}
+
+    - id: publish
+      name: Push Template to GitHub
+      action: publish:github
+      input:
+        allowedHosts: ['github.com']
+        defaultBranch: "main"
+        repoUrl: "github.com?repo=${{ parameters.appName }}-dev&owner=munish-mongodb"
+
+    - id: register
+      name: Register
+      action: catalog:register
+      input:
+        catalogInfoUrl: "https://github.com/munish-mongodb/${{ parameters.appName }}-dev/blob/main/catalog-info.yaml"
+  
+    - action: fs:delete
+      id: deleteFiles
+      name: Delete files
+      input:
+         files:
+          - catalog-info.yaml
+
+    - action: publish:github:pull-request
+      name: Create a pull reuqest with target branch name
+      input:
+        repoUrl: github.com?repo=argo-apps&owner=munish-mongodb
+        branchName: ${{ parameters.appName }}-dev
+        title: Create my new db
+        description: This PR is really good
+        targetBranchName: main    
+        targetPath: apps
+      

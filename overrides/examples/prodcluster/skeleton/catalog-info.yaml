@@ -1,0 +1,15 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: ${{values.appName | dump}}
+  description: This is the deployment spec for the prod cluster on MongoDB Atlas
+  labels:
+    example.com/custom: custom_label_value
+  tags:
+    - prod
+    - ${{values.appName}}
+spec:
+  type: service
+  lifecycle: development
+  owner: developers
+  system: internal

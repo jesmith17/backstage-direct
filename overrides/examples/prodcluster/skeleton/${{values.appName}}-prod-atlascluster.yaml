@@ -1,0 +1,37 @@
+apiVersion: atlas.mongodb.com/v1
+kind: AtlasProject
+metadata:
+ name: ${{values.appName}}-prod
+spec:
+ name: ${{values.appName}}-prod
+ connectionSecretRef:
+   name: mongodb-atlas-operator-api-key
+ projectIpAccessList:
+   - cidrBlock: "0.0.0.0/0"
+     comment: "CIDR block for Application Server A - D"
+---
+
+apiVersion: atlas.mongodb.com/v1
+kind: AtlasDeployment
+metadata:
+  name: ${{ values.appName}}
+spec:
+  projectRef:
+    name: ${{ values.appName}}-prod
+  deploymentSpec:
+    clusterType: REPLICASET
+    name: "Prod-cluster"
+    tags:
+      - key: "environment"
+        value: "production"
+    replicationSpecs:
+      - zoneName: US-Zone
+        regionConfigs:
+          - electableSpecs:
+              instanceSize: ${{ values.instanceSize}}
+              nodeCount: 3
+            providerName: AWS
+            regionName: ${{ values.region}}
+            priority: 7
+
+---

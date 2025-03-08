@@ -1,0 +1,59 @@
+name: Copy YAML Files to Argo Apps Repo and Create PR
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  copy-changed-yaml:
+    name: Copy Changed YAML Files and Create PR
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the source repo
+      - name: Checkout Source Repository
+        uses: actions/checkout@v3
+
+      # Step 2: Clone the target repository
+      - name: Clone Target Repository
+        run: |
+          git clone https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/jesmith17/argo-apps.git target-repo
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      # Step 3: Copy Changed YAML Files to Target Repo
+      - name: Copy Changed YAML Files
+        run: |
+            find . -type f -name "*.atlascluster.yaml" -exec cp {} target-repo/apps/ \;
+
+      # Step 6: Create a new branch in the target repo
+      - name: Create New Branch
+        run: |
+          cd target-repo
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+          git checkout -b update-yaml-${{ github.run_id }}
+          if git status --porcelain | grep .; then
+            git add .
+            git commit -m "Update YAML files from source repo"
+            git push origin update-yaml-${{ github.run_id }}
+          else
+            echo "No changes to commit. Skipping push."
+            exit 0
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      # Step 7: Create a Pull Request
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+          commit-message: Update YAML files from source repo
+          branch: update-yaml-${{ github.run_id }}
+          base: main
+          title: "Sync YAML files from source repo"
+          body: |
+            This PR updates the following YAML files from the source repository.
+            
