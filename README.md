@@ -23,6 +23,17 @@ GITHUB_USER_NAME=<Github user name>
 1. In the `overrides/examples/org.yaml` file replace both values of `<GITHUB_USER_NAME>` with the same value you provided above for your github User Name. 
 
 
+## Execute
+
+```shell
+docker build -t backstage .
+
+docker-compose up 
+```
+
+Navigate to `http://localhost:3000` to view the app
+
+
 
 ### Creating Github Personal Access Token
 
