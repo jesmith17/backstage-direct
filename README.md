@@ -2,10 +2,6 @@
 
 Demo of using the backstage tool to create new repos seeded with instructions on how to create Atlas from the Atlas Kubernetes Operator
 
-
-
-
-
 ## Setup
 
 1. Clone the repository
@@ -48,6 +44,16 @@ To create an app in Github (for backstage to use) follow the instructions for [C
 The "Homepage URL" should point to Backstage's frontend, in our tutorial it would be `http://localhost:3000`
 
 The "Authorization callback URL" will point to the auth backend, which will most likely be `http://localhost:7007/api/auth/github/handler/frame`
+
+
+## Overview
+
+The purpose of the demo is to allow users to show the "Art of the Possible" around automating provisioning and updating of an Atlas
+cluster. This allows customers to understand the benefits of the "landing Zone" effort which is 
+
+- Reduced operational costs. No more spending time with the ops team to manually provision a MongoDB Atlas cluster
+- Enhanced security and audit controls. Automation of the process makes it easier to comply with audits and to ensure that teams are following organization security practices because those can be built into the configuration to start
+- Reduced friction for development teams, and moves closer to "You build it, you own it" that is often times the end state goal for DevOps or Platform engineering teams. 
 
 
 

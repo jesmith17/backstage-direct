@@ -1,0 +1,87 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: mongodb-database-terraform-template
+  title: Atlas Production Terraform Template
+  description: Scaffold a GitHub repository containing database configuration and Terraform YAML
+  tags: 
+    - recommended
+    - aws
+    - prod
+spec:
+  owner: developers
+  type: service
+  
+  parameters:
+    - title: Database Configuration
+      required:
+        - appName
+      properties:
+        appName:
+          title: Production Application Name
+          type: string
+        region:
+          title: AWS region
+          default: US_EAST_1
+          type: string
+          enum:
+            - US_EAST_1
+            - US_WEST_1
+        instanceSize:
+          title: Database Name
+          type: string
+          default: M10
+          enum:
+            - M10
+            - M20
+            - M30
+        databaseUser:
+          title: Database Username
+          type: string
+          default: admin
+        repo_owner:
+          title: App Team Repo Owner
+          type: string
+
+          
+
+  steps:
+    - id: template
+      name: Fetch Skeleton + Template
+      action: fetch:template
+      input:
+        url: ./skeleton
+        copyWithoutTemplating:
+          - .github/workflows/*
+          - .gitignore
+        values:
+          appName: ${{ parameters.appName }}
+          region: ${{ parameters.region }}
+          instanceSize: ${{ parameters.instanceSize }}
+          databaseUser: ${{ parameters.databaseUser }}
+
+    - id: publish
+      name: Push Template to GitHub
+      action: publish:github
+      input:
+        allowedHosts: ['github.com']
+        defaultBranch: "backstage"
+        repoUrl: github.com?repo=${{ parameters.appName }}&owner=${{parameters.repo_owner}}
+        secrets:
+          GH_TOKEN: ${{ env.GITHUB_PAT }}
+
+    - action: fs:delete
+      id: deleteFiles
+      name: Delete files
+      input:
+         files:
+          - catalog-info.yaml
+          - .github/workflows/trigger-on-changes.yaml
+
+    - id: register
+      name: Register
+      action: catalog:register
+      input:
+        catalogInfoUrl: "https://github.com/${{parameters.repo_owner}}/${{ parameters.appName }}/blob/backstage/catalog-info.yaml"
+
+
