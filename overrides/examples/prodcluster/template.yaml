@@ -42,6 +42,9 @@ spec:
         repo_owner:
           title: App Team Repo Owner
           type: string
+        argo_repo:
+          title: Argo Apps Repo Name
+          type: string
 
           
 
@@ -81,8 +84,8 @@ spec:
     - action: publish:github:pull-request
       name: Create a pull request with target branch name
       input:
-        repoUrl: github.com?repo=${{ parameters.appName }}&owner=${{ parameters.repo_owner }}
-        branchName: backstage
+        repoUrl: github.com?repo=${{ parameters.argo_repo }}&owner=${{ parameters.repo_owner }}
+        branchName: ${{ parameters.appName }}-prod
         title: Create my new db
         description: This PR is really good
         targetBranchName: main
