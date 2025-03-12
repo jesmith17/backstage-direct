@@ -5,7 +5,7 @@ Demo of using the backstage tool to create new repos seeded with instructions on
 ## Setup
 
 1. Clone the repository
-1. Create a new file called `.env` in the root of your project. 
+1. Create a copy of `.env.example` and name it `.env` in the root of your project. 
 1. Add the following entries to your `.env` file
 
 ```shell
@@ -16,7 +16,8 @@ GITHUB_CLIENT_SECRET=<Github OAuth Client Secret>
 GITHUB_USER_NAME=<Github user name>
 
 ```
-1. In the `overrides/examples/org.yaml` file replace both values of `<GITHUB_USER_NAME>` with the same value you provided above for your github User Name. 
+1. Create a copy of `overrides/examples/org.yaml.example` and name it `overrides/examples/org.yaml`
+1. Replace both values of `<GITHUB_USER_NAME>` with the same value you provided above for your github User Name. 
 
 
 ## Execute
