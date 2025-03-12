@@ -1,0 +1,92 @@
+# Backstage override configuration for your local development environment
+app:
+  title: MongoDB Atlas Provisioning Portal
+  baseUrl: http://localhost:3000
+  listen:
+    host: 0.0.0.0
+
+backend:
+  listen:
+    port: 7007
+    host: 0.0.0.0
+
+organization:
+  name: MongoDB Atlas
+
+auth:
+  # see https://backstage.io/docs/auth/ to learn about auth providers
+  environment: development
+  providers:
+    # See https://backstage.io/docs/auth/guest/provider
+    guest: {}
+    github:
+      development:
+        clientId: ${GITHUB_CLIENT}
+        clientSecret: ${GITHUB_CLIENT_SECRET}
+        signIn:
+          resolvers:
+            # Matches the GitHub username with the Backstage user entity name.
+            # See https://backstage.io/docs/auth/github/provider#resolvers for more resolvers.
+            - resolver: usernameMatchingUserEntityName
+
+
+catalog:
+  rules:
+  - allow: [Component, System, API, Resource, Location, Template]
+  locations:
+    - type: file
+      target: ../../examples/devcluster/template.yaml
+      rules:
+        - allow: [ Template ]
+    - type: file
+      target: ../../examples/prodcluster/template.yaml
+      rules:
+        - allow: [ Template ]
+
+    # Local example template
+    - type: file
+      target: ../../examples/terraform/template.yaml
+      rules:
+        - allow: [ Template ]
+
+    # Local example data, file locations are relative to the backend process, typically `packages/backend`
+    - type: file
+      target: ../../examples/entities.yaml
+
+    # Local example template
+    - type: file
+      target: ../../examples/template/template.yaml
+      rules:
+        - allow: [ Template ]
+
+
+    # Local example organizational data
+    - type: file
+      target: ../../examples/org.yaml
+      rules:
+        - allow: [ User, Group ]
+
+
+#database:
+#  client: pg
+#  connection:
+#    host: pg_host_backstage
+#    port: 5433
+#    user: backstage
+#    password: backstage
+
+scaffolder:
+  # see https://backstage.io/docs/features/software-templates/configuration for software template options
+  actions:
+    publish:
+      github:
+        # token: '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'
+        token: ${GH_PA_TOKEN}
+
+integrations:
+  github:
+    - host: github.com
+      # This is a Personal Access Token or PAT from GitHub. You can find out how to generate this token, and more information
+      # about setting up the GitHub integration here: https://backstage.io/docs/integrations/github/locations#configuration
+      # token: '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'
+      token: ${GH_PA_TOKEN}

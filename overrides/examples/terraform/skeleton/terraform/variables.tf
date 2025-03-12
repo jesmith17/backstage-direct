@@ -9,11 +9,14 @@ variable "private_key" {
 variable "org_id" {
   type        = string
   description = "MongoDB Organization ID"
+  default = "5c5c939079358e2b051bc839"
 }
-variable "project_name" {
+variable "project_id" {
   type        = string
-  description = "The MongoDB Atlas Project Name"
+  description = "The MongoDB Atlas Project ID"
+  default = "6165a706781d054e85f67f97"
 }
+
 variable "cluster_name" {
   type        = string
   description = "The MongoDB Atlas Cluster Name"

@@ -39,6 +39,9 @@ spec:
           title: Database Username
           type: string
           default: admin
+        databasePass:
+          title: Database user password
+          type: string
         repo_owner:
           title: App Team Repo Owner
           type: string
@@ -59,16 +62,48 @@ spec:
           region: ${{ parameters.region }}
           instanceSize: ${{ parameters.instanceSize }}
           databaseUser: ${{ parameters.databaseUser }}
+          databasePass: ${{ parameters.databaseUser }}
 
-    - id: publish
-      name: Push Template to GitHub
-      action: publish:github
+    - id: create
+      name: Create Repo
+      action: github:repo:create
       input:
+        files:
+          - README.md
+          - /github/workflows/*
         allowedHosts: ['github.com']
-        defaultBranch: "backstage"
+        defaultBranch: "main"
         repoUrl: github.com?repo=${{ parameters.appName }}&owner=${{parameters.repo_owner}}
         secrets:
           GH_TOKEN: ${{ env.GITHUB_PAT }}
+          MONGODB_ATLAS_PUBLIC_KEY: ${{env.MONGODB_ATLAS_PUBLIC_KEY }}
+          MONGODB_ATLAS_PRIVATE_KEY: ${{env.MONGODB_ATLAS_PRIVATE_KEY }}
+          BUCKET_TF_STATE: ${{ env.BUCKET_TF_STATE }}
+
+    - id: push
+      name: Push content to repo
+      action: github:repo:push
+      input:
+        files:
+          - README.md
+          - /github/workflows/*
+          - catalog-info.yaml
+        allowedHosts: [ 'github.com' ]
+        defaultBranch: "main"
+        repoUrl: github.com?repo=${{ parameters.appName }}&owner=${{parameters.repo_owner}}
+
+    - id: pull-request
+      action: publish:github:pull-request
+      name: Create a pul request for Terraform content
+      input:
+        files:
+          - terraform/*
+        repoUrl: github.com?repo=${{ parameters.appName }}&owner=${{ parameters.repo_owner }}
+        branchName: terraform
+        title: Create my new db
+        description: This PR is really good
+        targetBranchName: main
+        targetPath: apps
 
     - action: fs:delete
       id: deleteFiles
@@ -82,6 +117,6 @@ spec:
       name: Register
       action: catalog:register
       input:
-        catalogInfoUrl: "https://github.com/${{parameters.repo_owner}}/${{ parameters.appName }}/blob/backstage/catalog-info.yaml"
+        catalogInfoUrl: "https://github.com/${{parameters.repo_owner}}/${{ parameters.appName }}/blob/main/catalog-info.yaml"
 
 
