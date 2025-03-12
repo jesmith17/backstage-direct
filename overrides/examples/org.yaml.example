@@ -2,7 +2,7 @@
 apiVersion: backstage.io/v1alpha1
 kind: Group
 metadata:
-  name: jesmith17
+  name: <GITHUB_USER_NAME>
 spec:
   type: team
   children: []
@@ -12,7 +12,7 @@ spec:
 apiVersion: backstage.io/v1alpha1
 kind: User
 metadata:
-  name: jesmith17
+  name: <GITHUB_USER_NAME>
 spec:
   memberOf: [developers]
 
