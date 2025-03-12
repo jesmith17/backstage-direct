@@ -85,7 +85,7 @@ spec:
       name: Create a pull request with target branch name
       input:
         repoUrl: github.com?repo=${{ parameters.argo_repo }}&owner=${{ parameters.repo_owner }}
-        branchName: backstage
+        branchName: ${{ parameters.appName }}-prod
         title: Create my new db
         description: This PR is really good
         targetBranchName: main
