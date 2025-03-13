@@ -75,10 +75,9 @@ spec:
         defaultBranch: "main"
         repoUrl: github.com?repo=${{ parameters.appName }}&owner=${{parameters.repo_owner}}
         secrets:
-          GH_TOKEN: ${{ env.GITHUB_PAT }}
-          MONGODB_ATLAS_PUBLIC_KEY: ${{env.MONGODB_ATLAS_PUBLIC_KEY }}
-          MONGODB_ATLAS_PRIVATE_KEY: ${{env.MONGODB_ATLAS_PRIVATE_KEY }}
-          BUCKET_TF_STATE: ${{ env.BUCKET_TF_STATE }}
+          GH_TOKEN: ${GITHUB_PAT}
+          MONGODB_ATLAS_PUBLIC_KEY: ${MONGODB_ATLAS_PUBLIC_KEY }
+          MONGODB_ATLAS_PRIVATE_KEY: ${MONGODB_ATLAS_PRIVATE_KEY }
 
     - id: push
       name: Push content to repo
