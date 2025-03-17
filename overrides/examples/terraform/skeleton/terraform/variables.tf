@@ -1,15 +1,11 @@
-variable "public_key" {
-  type        = string
-  description = "Public Programmatic API key to authenticate to Atlas"
-}
-variable "private_key" {
-  type        = string
-  description = "Private Programmatic API key to authenticate to Atlas"
-}
 variable "project_id" {
   type        = string
   description = "The MongoDB Atlas Project ID"
-  default     = "6165a706781d054e85f67f97"
+}
+variable "instance_size" {
+  type        = string
+  description = "size of the mongodb instance to create"
+  default     = "M10"
 }
 
 variable "cluster_name" {
@@ -27,10 +23,6 @@ variable "region" {
 variable "dbuser" {
   type        = string
   description = "MongoDB Atlas Database User Name"
-}
-variable "dbuser_password" {
-  type        = string
-  description = "MongoDB Atlas Database User Password"
 }
 variable "ip_address" {
   type        = string

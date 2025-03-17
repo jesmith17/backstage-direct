@@ -20,6 +20,15 @@ GITHUB_USER_NAME=<Github user name>
 1. Replace both values of `<GITHUB_USER_NAME>` with the same value you provided above for your github User Name. 
 
 
+> [!IMPORTANT]  
+> Automating creation of an Atlas Cluster requires that you have an API key with `Project Owner` authorization. If you do not already
+> have an API key you will need to create one before running the templates.
+> 
+> Make sure and save both to a file for usage. You will need to copy/paste them into the templates in Backstage when running the demo. 
+
+
+
+
 ## Execute
 
 ```shell

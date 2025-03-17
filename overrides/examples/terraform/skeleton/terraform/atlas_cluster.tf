@@ -1,23 +1,28 @@
-resource "mongodbatlas_advanced_cluster" "cluster" {
-  project_id     = var.project_id
-  name           = var.cluster_name
-  cluster_type   = "REPLICASET"
-  backup_enabled = true
-
+resource "mongodbatlas_cluster" "cluster" {
+  project_id   = var.project_id
+  name         = var.cluster_name
+  cluster_type = "REPLICASET"
   replication_specs {
-    region_configs {
-      priority      = 7
-      provider_name = var.cloud_provider
-      region_name   = var.region
-      electable_specs {
-        instance_size = "M10"
-        node_count    = 3
-      }
+    num_shards = 1
+    regions_config {
+      region_name     = var.region
+      electable_nodes = 3
+      priority        = 7
+      read_only_nodes = 0
     }
   }
+  cloud_backup = true
+  auto_scaling_disk_gb_enabled = true
+  mongo_db_major_version       = "8.0"
+
+  # Provider Settings "block"
+  provider_name               = "AWS"
+  provider_region_name        = var.region
+  provider_instance_size_name = var.instance_size
 }
 
 output "connection_strings" {
-  value = mongodbatlas_advanced_cluster.cluster.connection_strings[0].standard_srv
+  value = mongodbatlas_cluster.cluster.connection_strings[0].standard_srv
 }
+
 

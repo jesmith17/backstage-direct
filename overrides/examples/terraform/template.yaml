@@ -6,8 +6,7 @@ metadata:
   description: Scaffold a GitHub repository containing database configuration and Terraform YAML
   tags: 
     - recommended
-    - aws
-    - prod
+
 spec:
   owner: developers
   type: service
@@ -19,6 +18,9 @@ spec:
       properties:
         appName:
           title: Production Application Name
+          type: string
+        project_id:
+          title: ID of the Atlas Project for the Cluster
           type: string
         region:
           title: AWS region
@@ -42,6 +44,15 @@ spec:
         databasePass:
           title: Database user password
           type: string
+          ui:field: Secret
+        public_key:
+          title: Atlas Public API Key
+          type: string
+          ui:field: Secret
+        private_key:
+          title: Atlas Private API Key
+          type: string
+          ui:field: Secret
         repo_owner:
           title: App Team Repo Owner
           type: string
@@ -62,41 +73,34 @@ spec:
           region: ${{ parameters.region }}
           instanceSize: ${{ parameters.instanceSize }}
           databaseUser: ${{ parameters.databaseUser }}
-          databasePass: ${{ parameters.databaseUser }}
+          databasePass: ${{ secrets.databasePass }}
 
     - id: create
       name: Create Repo
       action: github:repo:create
       input:
-        files:
-          - README.md
-          - /github/workflows/*
         allowedHosts: ['github.com']
         defaultBranch: "main"
         repoUrl: github.com?repo=${{ parameters.appName }}&owner=${{parameters.repo_owner}}
         secrets:
-          GH_TOKEN: ${GITHUB_PAT}
-          MONGODB_ATLAS_PUBLIC_KEY: ${MONGODB_ATLAS_PUBLIC_KEY }
-          MONGODB_ATLAS_PRIVATE_KEY: ${MONGODB_ATLAS_PRIVATE_KEY }
+          MONGODB_ATLAS_PUBLIC_KEY: ${{ secrets.public_key }}
+          MONGODB_ATLAS_PRIVATE_KEY: ${{ secrets.private_key }}
+          db_password: ${{ parameters.databasePass }}
+        repoVariables:
+          project_id: ${{ parameters.project_id }}
 
     - id: push
       name: Push content to repo
       action: github:repo:push
       input:
-        files:
-          - README.md
-          - /github/workflows/*
-          - catalog-info.yaml
         allowedHosts: [ 'github.com' ]
         defaultBranch: "main"
         repoUrl: github.com?repo=${{ parameters.appName }}&owner=${{parameters.repo_owner}}
 
     - id: pull-request
       action: publish:github:pull-request
-      name: Create a pul request for Terraform content
+      name: Create a pull request for Terraform content
       input:
-        files:
-          - terraform/*
         repoUrl: github.com?repo=${{ parameters.appName }}&owner=${{ parameters.repo_owner }}
         branchName: terraform
         title: Create my new db
@@ -110,7 +114,7 @@ spec:
       input:
          files:
           - catalog-info.yaml
-          - .github/workflows/trigger-on-changes.yaml
+          - .github/workflows/terraform.yaml
 
     - id: register
       name: Register
