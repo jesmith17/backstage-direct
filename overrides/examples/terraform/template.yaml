@@ -19,7 +19,7 @@ spec:
         appName:
           title: Production Application Name
           type: string
-        project_id:
+        projectId:
           title: ID of the Atlas Project for the Cluster
           type: string
         region:
@@ -74,6 +74,7 @@ spec:
           instanceSize: ${{ parameters.instanceSize }}
           databaseUser: ${{ parameters.databaseUser }}
           databasePass: ${{ secrets.databasePass }}
+          projectId: ${{ parameters.projectId }}
 
     - id: create
       name: Create Repo
