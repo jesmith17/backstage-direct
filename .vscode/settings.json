@@ -2,7 +2,8 @@
     "yaml.schemas": {
         "https://json.schemastore.org/catalog-info.json": [
             "file:///Users/charlie.xu/code/idp-demo/backstage-direct/overrides/examples/prodcluster/template.yaml",
-            "file:///Users/charlie.xu/code/idp-demo/backstage-direct/overrides/examples/devcluster/template.yaml"
+            "file:///Users/charlie.xu/code/idp-demo/backstage-direct/overrides/examples/devcluster/template.yaml",
+            "file:///Users/charlie.xu/code/idp-demo/backstage-direct/overrides/examples/terraform/template.yaml"
         ]
     }
 }

@@ -3,7 +3,7 @@ name: Copy YAML Files to Argo Apps Repo and Create PR
 on:
   push:
     branches:
-      - main
+      - backstage
 
 jobs:
   copy-changed-yaml:
@@ -18,14 +18,14 @@ jobs:
       # Step 2: Clone the target repository
       - name: Clone Target Repository
         run: |
-          git clone https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/jesmith17/argo-apps.git target-repo
+          git clone https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/cyx2/idp-demo-argo-apps.git target-repo
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
       # Step 3: Copy Changed YAML Files to Target Repo
       - name: Copy Changed YAML Files
         run: |
-            find . -type f -name "*.atlascluster.yaml" -exec cp {} target-repo/apps/ \;
+            find . -type f -name "*atlascluster.yaml" -exec cp {} target-repo/apps/ \;
 
       # Step 6: Create a new branch in the target repo
       - name: Create New Branch
